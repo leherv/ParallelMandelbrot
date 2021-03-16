@@ -1,7 +1,7 @@
 #include <iostream>
 #include "mandelbrot.h"
 #include <string>
-#include <chrono>
+#include <fstream>
 
 int main(int argc, char *argv[]) {
 
@@ -30,12 +30,30 @@ int main(int argc, char *argv[]) {
     viewPort.minY = minY;
     viewPort.maxY = maxY;
 
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    mandelbrot(viewPort, window, iterations, "mandelbrot.tga");
-    // parallelMandelbrot(viewPort, window, iterations, "mandelbrot.tga", 20);
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    /*
+    long sumMs = 0;
+    int numberExecutions = 100;
+    for(int i = 0; i < numberExecutions; i++) {
+        // sumMs += mandelbrot(viewPort, window, iterations, "mandelbrot.tga");
+        sumMs += parallelMandelbrot(viewPort, window, iterations, "mandelbrot.tga", 20);
+    }
+    long avgMs = sumMs / numberExecutions;
+    */
 
-    std::cout << "Execution took: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms" << std::endl;
+    std::ofstream csv;
+    csv.open ("performance.csv");
+    csv << "threads, execution time (ms), speedup" << std::endl;
+    auto speedSingleThread = avgTimeInMs(10, viewPort, window, iterations, 1);
+    csv << 1 << "," << speedSingleThread << "," << 0 << std::endl;
+    for(int i = 2; i <= 100; i++) {
+        auto avgTimeMs = avgTimeInMs(10, viewPort, window, iterations, i);
+        csv << i << "," << avgTimeMs << "," << speedSingleThread/avgTimeMs << std::endl;
+    }
+    csv.close();
 
     return 0;
 }
+
+
+
+

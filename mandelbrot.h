@@ -15,8 +15,8 @@ typedef struct {
     int maxY;
 } Rectangle;
 
-void mandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string& filename);
-void parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string &filename, int numThreads);
-
+long mandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string& filename);
+long parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string &filename, int numThreads);
+long avgTimeInMs(int numberExecutions, Rectangle viewPort, Rectangle window, int iterations, int numThreads);
 
 #endif //PARALLELMANDELBROT_MANDELBROT_H

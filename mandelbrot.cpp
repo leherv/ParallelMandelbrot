@@ -7,6 +7,7 @@
 #include "tga.h"
 #include <omp.h>
 #include <numeric>
+#include <chrono>
 
 double calculateScalingFactor(int viewPortMax, int viewPortMin, int windowMax, int windowMin) {
     return (viewPortMax - viewPortMin) / (double) (windowMax - windowMin);
@@ -53,9 +54,9 @@ tga::TGAImage InitializeImage(int width, int height) {
     return image;
 }
 
-void mandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string &filename) {
+long mandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string &filename) {
     tga::TGAImage image = InitializeImage(window.maxX, window.maxY);
-
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     for (auto py = 0; py < image.height; py++) {
         for (auto px = 0; px < image.width; px++) {
             double color = calcColor(px, py, viewPort, window, maxIterations);
@@ -65,7 +66,9 @@ void mandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const s
             image.imageData.at(pixelIndex + 2) = color;
         }
     }
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     tga::saveTGA(image, filename.c_str());
+    return std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
 }
 
 std::vector<int> getChunks(int whole, int numberParts) {
@@ -88,12 +91,13 @@ int getY(int pixelIndex, int width) {
     return pixelIndex / width;
 }
 
-void parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string &filename, int numThreads) {
+long parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string &filename, int numThreads) {
     tga::TGAImage image = InitializeImage(window.maxX, window.maxY);
     std::vector<std::vector<unsigned char>> imageByteParts(numThreads);
+    std::chrono::steady_clock::time_point begin;
 
     omp_set_num_threads(numThreads);
-    #pragma omp parallel
+    #pragma omp parallel firstprivate(window, viewPort, maxIterations)
     {
         int threads = omp_get_num_threads();
         int pixels = window.maxY * window.maxX;
@@ -103,8 +107,8 @@ void parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations,
         std::vector<unsigned char> byteParts(pixelChunks.at(id) * 3, 0);
         unsigned int startIndex = std::accumulate(pixelChunks.begin(), pixelChunks.begin() + id, 0);
         int width = window.maxX;
-
-        #pragma omp parallel for collapse(2) schedule(static)
+        begin = std::chrono::steady_clock::now();
+        #pragma omp parallel for schedule(static)
         for (auto localPixelIndex = 0; localPixelIndex < pixelChunks.at(id); localPixelIndex++) {
             int pixelIndexWindow = startIndex + localPixelIndex;
             int px = getX(pixelIndexWindow, width);
@@ -122,7 +126,17 @@ void parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations,
         std::copy(imageBytePart.begin(), imageBytePart.end(), image.imageData.begin() + startIndex);
         startIndex += imageBytePart.size();
     }
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     tga::saveTGA(image, filename.c_str());
+    return std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+}
+
+long avgTimeInMs(int numberExecutions, Rectangle viewPort, Rectangle window, int iterations, int numThreads) {
+    long sumMs = 0;
+    for(int i = 0; i < numberExecutions; i++) {
+        sumMs += parallelMandelbrot(viewPort, window, iterations, "mandelbrot.tga", numThreads);
+    }
+    return sumMs / numberExecutions;
 }
 
 
