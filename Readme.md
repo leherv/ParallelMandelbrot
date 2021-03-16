@@ -8,9 +8,10 @@ You have to pass the following command line arguments:
 4. minY of the viewPort
 5. maxX of the viewPort
 6. maxY of the viewPort
+7. maxIterations
 
 **Example:**
-ParallelMandelbrot.exe 1024 1024 -2 -1 1 1
+ParallelMandelbrot.exe 1024 1024 -2 -1 1 1 300
 
 
 ## Implementation
