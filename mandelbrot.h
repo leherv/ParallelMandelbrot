@@ -16,7 +16,7 @@ typedef struct {
 } Rectangle;
 
 void mandelbrot(Rectangle viewPort, Rectangle window, const std::string& filename);
-void parallelMandelbrot(Rectangle viewPort, Rectangle window, const std::string& filename);
+void parallelMandelbrot(Rectangle viewPort, Rectangle window, const std::string &filename, int numThreads);
 
 
 #endif //PARALLELMANDELBROT_MANDELBROT_H

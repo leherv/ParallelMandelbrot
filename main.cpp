@@ -30,8 +30,8 @@ int main(int argc, char *argv[]) {
     viewPort.maxY = maxY;
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    // mandelbrot(viewPort, window, "test.tga");
-    parallelMandelbrot(viewPort, window, "test.tga");
+    // mandelbrot(viewPort, window, "mandelbrot.tga");
+    parallelMandelbrot(viewPort, window, "mandelbrot.tga", 4);
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     std::cout << "Execution took: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms" << std::endl;

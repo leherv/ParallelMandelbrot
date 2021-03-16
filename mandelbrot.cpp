@@ -69,30 +69,35 @@ void mandelbrot(Rectangle viewPort, Rectangle window, const std::string &filenam
 
 void parallelMandelbrot(Rectangle viewPort, Rectangle window, const std::string &filename, int numThreads) {
     tga::TGAImage image = InitializeImage(window.maxX, window.maxY);
-
-    omp_set_num_threads(numThreads);
-    int chunkSize = image.width * image.height * 3;
+    unsigned int chunkSize = (image.width * image.height * 3) / numThreads;
     int chunkH = window.maxY / numThreads;
     std::vector<unsigned char> imageData;
+    imageData.assign(chunkSize, 0);
 
+    omp_set_num_threads(numThreads);
 #pragma omp parallel firstprivate(imageData)
-    int id = omp_get_thread_num();
-    int localH = id + chunkH;
-    #pragma omp parallel for collapse(2) firstprivate(id)
-        for (auto py = 0; py < localH; py++) {
+    {
+        int id = omp_get_thread_num();
+        std::cout << "i am thread number: " << id << std::endl;
+        int startH = id * chunkH;
+        int localH = startH + chunkH;
+#pragma omp parallel for collapse(2) schedule(static)
+        for (auto py = startH; py < localH; py++) {
             for (auto px = 0; px < image.width; px++) {
                 double color = calcColor(px, py, viewPort, window);
                 int pixelIndex = (py * window.maxX + px) * 3;
-                imageData.at(pixelIndex + 0) = color;
-                imageData.at(pixelIndex + 1) = color;
-                imageData.at(pixelIndex + 2) = color;
+                imageData.at((pixelIndex - (chunkSize * id)) + 0) = color;
+                imageData.at((pixelIndex - (chunkSize * id)) + 1) = color;
+                imageData.at((pixelIndex - (chunkSize * id)) + 2) = color;
             }
         }
-        int startIndex = id * chunkSize;
-        #pragma omp critical
+        unsigned int startIndex = id * chunkSize;
+#pragma omp critical
+        {
             std::copy(imageData.begin(), imageData.end(), image.imageData.begin() + startIndex);
-
-    tga::saveTGA(image, filename.c_str());
+        }
+        tga::saveTGA(image, filename.c_str());
+    }
 }
 
 
