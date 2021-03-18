@@ -59,6 +59,13 @@ Grundsätzlich ist hier je nach maxIteration(n) schedule static oder dynamic zu 
  * Static, wenn die einzelnen Pixelberechnungslaufzeiten sich nicht zu sehr unterscheiden (kleines n)
  * Dynamic, wenn das n eher groß ist und deswegen die einzelnen Chunks sehr verschieden lang dauern können
 Dynamic macht bei kleineren ns weniger Sinn, weil dynamic natürlich einen Overhead erzeugt.
+   
+In diesem Fall (war explizit NICHT Teil der Aufgabe) würden Tasks für die ChunkSizes und das Static Scheduling mehr Sinn machen,
+da somit unterschiedliche Laufzeiten durch einen der Vorteile von Tasks (nicht absolut fair verteilte compute-time für alle Threads)
+ausgeglichen werden würden
+
+Es gäbe auch die Möglichkeit dynamic scheduling mit lokalen Threads zu verwenden (mittels openMp's reduce) ist aber nicht besonders einfach 
+und nicht nötig, wenn man ja auch einfach Tasks verwenden könnte.
 
 
 
