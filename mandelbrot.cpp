@@ -36,7 +36,7 @@ int calcColor(int px, int py, Rectangle viewPort, Rectangle window, int maxItera
         double y = (zy * zx + zx * zy) + cy;
         if ((x * x + y * y) > 4) {
             // diverge paint pixel lighter (depending on n)
-            return 255 * (n / maxIterations);
+            return 255 - (255 * ((float)n / maxIterations));
         }
         zx = x;
         zy = y;
