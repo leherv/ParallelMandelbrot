@@ -50,3 +50,15 @@ I then used this to generate the following graphs:
 ![speedup](speedup.png "Speedup")
 ![executionTime](executionTime.png "Execution Time (ms)")
 
+
+## Learning:
+In diesem Fall (mit meiner Lösung in fixe Chunksizes aufteilen) macht nur Static scheduling Sinn (da ich ja die Arbeit selbst verteilt habe)!
+... also richtig gemacht :)
+
+Grundsätzlich ist hier je nach maxIteration(n) schedule static oder dynamic zu empfehlen.
+ * Static, wenn die einzelnen Pixelberechnungslaufzeiten sich nicht zu sehr unterscheiden (kleines n)
+ * Dynamic, wenn das n eher groß ist und deswegen die einzelnen Chunks sehr verschieden lang dauern können
+Dynamic macht bei kleineren ns weniger Sinn, weil dynamic natürlich einen Overhead erzeugt.
+
+
+
