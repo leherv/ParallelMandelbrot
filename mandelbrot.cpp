@@ -97,7 +97,7 @@ long parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations,
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     omp_set_num_threads(numThreads);
-    #pragma omp parallel firstprivate(window, viewPort, maxIterations)
+    #pragma omp parallel
     {
         int threads = omp_get_num_threads();
         int pixels = window.maxY * window.maxX;
@@ -107,7 +107,6 @@ long parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations,
         std::vector<unsigned char> byteParts(pixelChunks.at(id) * 3, 0);
         unsigned int startIndex = std::accumulate(pixelChunks.begin(), pixelChunks.begin() + id, 0);
         int width = window.maxX;
-        #pragma omp parallel for schedule(static)
         for (auto localPixelIndex = 0; localPixelIndex < pixelChunks.at(id); localPixelIndex++) {
             int pixelIndexWindow = startIndex + localPixelIndex;
             int px = getX(pixelIndexWindow, width);
