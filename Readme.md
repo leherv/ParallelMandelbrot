@@ -54,6 +54,8 @@ I then used this to generate the following graphs:
 ## Learning:
 In diesem Fall (mit meiner Lösung in fixe Chunksizes aufteilen) macht nur Static scheduling Sinn (da ich ja die Arbeit selbst verteilt habe)!
 ... also richtig gemacht :)
+Obwohl Kollegen mit dynamic scheduling bessere Speedups erzielt haben! also in der Loop direkt ins tgaImage-Array schreiben (man muss ja nicht locken weil es immer eine eigene Adresse ist).
+Man hat dann aber Probleme durch cache-invalidation, die sich aber anscheinend nicht so stark auswirken.
 
 Grundsätzlich ist hier je nach maxIteration(n) schedule static oder dynamic zu empfehlen.
  * Static, wenn die einzelnen Pixelberechnungslaufzeiten sich nicht zu sehr unterscheiden (kleines n)
