@@ -40,7 +40,7 @@ average runtimes in ms:
 
 | sequential | parallel (20 threads) | Speedup |
 | --- | --- | --- |
-|  633 ms | 85 ms | 7.45 |
+|  633 ms | 130 ms | 4.86 |
 
 ## Speedup Quotient
 In main.cpp I also added a simple generation for a .csv file containing the speedup quotient from 1 to 100 threads.

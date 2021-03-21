@@ -94,7 +94,7 @@ int getY(int pixelIndex, int width) {
 long parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string &filename, int numThreads) {
     tga::TGAImage image = InitializeImage(window.maxX, window.maxY);
     std::vector<std::vector<unsigned char>> imageByteParts(numThreads);
-    std::chrono::steady_clock::time_point begin;
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     omp_set_num_threads(numThreads);
     #pragma omp parallel firstprivate(window, viewPort, maxIterations)
@@ -107,7 +107,6 @@ long parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations,
         std::vector<unsigned char> byteParts(pixelChunks.at(id) * 3, 0);
         unsigned int startIndex = std::accumulate(pixelChunks.begin(), pixelChunks.begin() + id, 0);
         int width = window.maxX;
-        begin = std::chrono::steady_clock::now();
         #pragma omp parallel for schedule(static)
         for (auto localPixelIndex = 0; localPixelIndex < pixelChunks.at(id); localPixelIndex++) {
             int pixelIndexWindow = startIndex + localPixelIndex;
