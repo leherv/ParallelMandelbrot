@@ -34,11 +34,13 @@ int main(int argc, char *argv[]) {
     long sumMs = 0;
     int numberExecutions = 100;
     for(int i = 0; i < numberExecutions; i++) {
-        // sumMs += mandelbrot(viewPort, window, iterations, "mandelbrot.tga");
-        sumMs += parallelMandelbrot(viewPort, window, iterations, "mandelbrot.tga", 20);
+        sumMs += mandelbrot(viewPort, window, iterations, "mandelbrot.tga");
+        // sumMs += parallelMandelbrot(viewPort, window, iterations, "mandelbrot.tga", 20);
     }
     long avgMs = sumMs / numberExecutions;
+    std::cout << "Average execution time: " << avgMs << "ms" << std::endl;
     */
+
 
     std::ofstream csv;
     csv.open ("performance.csv");
@@ -50,6 +52,9 @@ int main(int argc, char *argv[]) {
         csv << i << "," << avgTimeMs << "," << speedSingleThread/avgTimeMs << std::endl;
     }
     csv.close();
+
+    // mandelbrot(viewPort, window, iterations, "mandelbrot.tga");
+    // parallelMandelbrot(viewPort, window, iterations, "mandelbrot.tga", 100);
 
     return 0;
 }

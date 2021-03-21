@@ -32,6 +32,9 @@ After computing all the bytes I push the thread-local vector into a global vecto
 the id for distributing chunks of work and pushing to the global vector helps me to ensure that the image gets set back
 together in the right order, which is exactly what I do next **outside** of the parallel block. Lastly I save the image.
 
+## Hardware
+Intel i7-9750H @2.6GHz; 6 Cores
+
 ## Comparison Sequential and Parallel Solution
 
 In main.cpp I have commented out the code I used to roughly measure the difference in performance. The comparison uses
@@ -40,7 +43,7 @@ average runtimes in ms:
 
 | sequential | parallel (20 threads) | Speedup |
 | --- | --- | --- |
-|  633 ms | 130 ms | 4.86 |
+|  358 ms | 54 ms | 6.63 |
 
 ## Speedup Quotient
 In main.cpp I also added a simple generation for a .csv file containing the speedup quotient from 1 to 100 threads.
