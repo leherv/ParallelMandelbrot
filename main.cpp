@@ -31,13 +31,13 @@ int main(int argc, char *argv[]) {
     viewPort.maxY = maxY;
 
     /*
-    long sumMs = 0;
+    double sumMs = 0;
     int numberExecutions = 100;
     for(int i = 0; i < numberExecutions; i++) {
         sumMs += mandelbrot(viewPort, window, iterations, "mandelbrot.tga");
         // sumMs += parallelMandelbrot(viewPort, window, iterations, "mandelbrot.tga", 20);
     }
-    long avgMs = sumMs / numberExecutions;
+    double avgMs = sumMs / numberExecutions;
     std::cout << "Average execution time: " << avgMs << "ms" << std::endl;
     */
 

@@ -54,7 +54,7 @@ tga::TGAImage InitializeImage(int width, int height) {
     return image;
 }
 
-long mandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string &filename) {
+double mandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string &filename) {
     tga::TGAImage image = InitializeImage(window.maxX, window.maxY);
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     for (auto py = 0; py < image.height; py++) {
@@ -68,7 +68,8 @@ long mandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const s
     }
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     tga::saveTGA(image, filename.c_str());
-    return std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+    std::chrono::duration<double, std::milli> duration = end - begin;
+    return duration.count();
 }
 
 std::vector<int> getChunks(int whole, int numberParts) {
@@ -91,7 +92,7 @@ int getY(int pixelIndex, int width) {
     return pixelIndex / width;
 }
 
-long parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string &filename, int numThreads) {
+double parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations, const std::string &filename, int numThreads) {
     tga::TGAImage image = InitializeImage(window.maxX, window.maxY);
     std::vector<std::vector<unsigned char>> imageByteParts(numThreads);
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -126,11 +127,12 @@ long parallelMandelbrot(Rectangle viewPort, Rectangle window, int maxIterations,
     }
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     tga::saveTGA(image, filename.c_str());
-    return std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+    std::chrono::duration<double, std::milli> duration = end - begin;
+    return duration.count();
 }
 
-long avgTimeInMs(int numberExecutions, Rectangle viewPort, Rectangle window, int iterations, int numThreads) {
-    long sumMs = 0;
+double avgTimeInMs(int numberExecutions, Rectangle viewPort, Rectangle window, int iterations, int numThreads) {
+    double sumMs = 0;
     for(int i = 0; i < numberExecutions; i++) {
         sumMs += parallelMandelbrot(viewPort, window, iterations, "mandelbrot.tga", numThreads);
     }
